@@ -28,14 +28,16 @@ BUILD_ARGS                = --build-arg BASE_IMAGE=$(BASE_IMAGE) \
 							--build-arg CUDA_VERSION=$(CUDA_VERSION) \
 							--build-arg CUDA_CHANNEL=$(CUDA_CHANNEL) \
 							--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
-							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL)
+							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL) \
+							--build-arg ALKEMIST_LICENSE_KEY=<LICENSE_KEY_HERE>
 EXTRA_DOCKER_BUILD_FLAGS ?=
 DOCKER_BUILD              = DOCKER_BUILDKIT=1 \
 							docker build \
 								--progress=$(BUILD_PROGRESS) \
 								$(EXTRA_DOCKER_BUILD_FLAGS) \
 								--target $(BUILD_TYPE) \
-								-t $(DOCKER_FULL_NAME):$(DOCKER_TAG) \
+								--no-cache \
+								-t $(DOCKER_FULL_NAME):$(DOCKER_TAG)-LFR \
 								$(BUILD_ARGS) .
 DOCKER_PUSH               = docker push $(DOCKER_FULL_NAME):$(DOCKER_TAG)
 

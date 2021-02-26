@@ -5,7 +5,7 @@
 #
 #       If you do not use buildkit you are not going to have a good time
 #
-#       For reference: 
+#       For reference:
 #           https://docs.docker.com/develop/develop-images/build_enhancements/
 ARG BASE_IMAGE=ubuntu:18.04
 ARG PYTHON_VERSION=3.8
@@ -40,14 +40,28 @@ WORKDIR /opt/pytorch
 COPY . .
 RUN git submodule update --init --recursive
 
+FROM runsafesecurity-docker-alkemist-lfr.jfrog.io/ubuntu:bionic AS lfr-files
+
 FROM conda as build
 WORKDIR /opt/pytorch
 COPY --from=conda /opt/conda /opt/conda
 COPY --from=submodule-update /opt/pytorch /opt/pytorch
-RUN --mount=type=cache,target=/opt/ccache \
-    TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
+
+COPY --from=lfr-files /usr/src/lfr /opt/alkemist/lfr
+ENV LFR_ROOT_PATH=/opt/alkemist/lfr
+ARG ALKEMIST_LICENSE_KEY=<LICENSE_KEY_HERE>
+
+RUN /opt/conda/bin/conda install -y typing_extensions
+# RUN --mount=type=cache,target=/opt/ccache \
+    # TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
+RUN TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
     CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
-    python setup.py install
+    CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
+    # python setup.py install
+    ALKEMIST_LICENSE_KEY=<LICENSE_KEY_HERE> \
+    /opt/alkemist/lfr/scripts/lfr-helper.sh python setup.py install
+
+RUN cd tests && ./run_test.py
 
 FROM conda as conda-installs
 ARG PYTHON_VERSION=3.8
