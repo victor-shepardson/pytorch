@@ -33,7 +33,7 @@ BUILD_ARGS                = --build-arg BASE_IMAGE=$(BASE_IMAGE) \
 							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL)
 							--build-arg ALKEMIST_LICENSE_KEY=${ALKEMIST_LICENSE_KEY}$(date)
 EXTRA_DOCKER_BUILD_FLAGS ?=
-DOCKER_BUILD              = source ${ALKEMIST_KEY_FILE} && DOCKER_BUILDKIT=1 \
+DOCKER_BUILD              = source $(ALKEMIST_KEY_FILE) && DOCKER_BUILDKIT=1 \
 							docker build \
 								--progress=$(BUILD_PROGRESS) \
 								$(EXTRA_DOCKER_BUILD_FLAGS) \
