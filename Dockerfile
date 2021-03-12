@@ -40,6 +40,8 @@ WORKDIR /opt/pytorch
 COPY . .
 RUN git submodule update --init --recursive
 
+RUN --mount=type=secret,id=alkemist_key source /run/secrets/alkemist_key
+
 FROM runsafesecurity-docker-alkemist-lfr.jfrog.io/ubuntu:bionic AS lfr-files
 
 FROM conda as build
@@ -48,7 +50,6 @@ COPY --from=conda /opt/conda /opt/conda
 COPY --from=submodule-update /opt/pytorch /opt/pytorch
 COPY --from=lfr-files /usr/src/lfr /opt/alkemist/lfr
 ENV LFR_ROOT_PATH=/opt/alkemist/lfr
-RUN --mount=type=secret,id=alkemist_key source /run/secrets/alkemist_key
 
 FROM build as dev
 CMD bash
