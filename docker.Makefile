@@ -1,3 +1,5 @@
+ALKEMIST_KEY_FILE         = ../alkemist_key.sh
+
 DOCKER_REGISTRY           = docker.io
 DOCKER_ORG                = $(shell docker info 2>/dev/null | sed '/Username:/!d;s/.* //')
 DOCKER_IMAGE              = pytorch
@@ -28,8 +30,7 @@ BUILD_ARGS                = --build-arg BASE_IMAGE=$(BASE_IMAGE) \
 							--build-arg CUDA_VERSION=$(CUDA_VERSION) \
 							--build-arg CUDA_CHANNEL=$(CUDA_CHANNEL) \
 							--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
-							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL) \
-							--build-arg ALKEMIST_LICENSE_KEY=<LICENSE_KEY_HERE>
+							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL)
 EXTRA_DOCKER_BUILD_FLAGS ?=
 DOCKER_BUILD              = DOCKER_BUILDKIT=1 \
 							docker build \
@@ -37,6 +38,7 @@ DOCKER_BUILD              = DOCKER_BUILDKIT=1 \
 								$(EXTRA_DOCKER_BUILD_FLAGS) \
 								--target $(BUILD_TYPE) \
 								--no-cache \
+								--secret id=alkemist_key,src=$(ALKEMIST_KEY_FILE)
 								-t $(DOCKER_FULL_NAME):$(DOCKER_TAG)-LFR \
 								$(BUILD_ARGS) .
 DOCKER_PUSH               = docker push $(DOCKER_FULL_NAME):$(DOCKER_TAG)
