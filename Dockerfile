@@ -41,7 +41,9 @@ COPY . .
 RUN git submodule update --init --recursive
 
 # RUN --mount=type=secret,id=alkemist_key source /run/secrets/alkemist_key
+ARG ALKEMIST_LICENSE_KEY
 FROM runsafesecurity-docker-alkemist-lfr.jfrog.io/ubuntu:bionic AS lfr-files
+RUN echo $ALKEMIST_LICENSE_KEY
 
 FROM conda as build
 WORKDIR /opt/pytorch
