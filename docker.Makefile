@@ -38,7 +38,7 @@ DOCKER_BUILD              = DOCKER_BUILDKIT=1 \
 								$(EXTRA_DOCKER_BUILD_FLAGS) \
 								--target $(BUILD_TYPE) \
 								--no-cache \
-								--secret id=alkemist_key,src=$(ALKEMIST_KEY_FILE)
+								--secret id=alkemist_key,src=$(ALKEMIST_KEY_FILE) \
 								-t $(DOCKER_FULL_NAME):$(DOCKER_TAG)-LFR \
 								$(BUILD_ARGS) .
 DOCKER_PUSH               = docker push $(DOCKER_FULL_NAME):$(DOCKER_TAG)
