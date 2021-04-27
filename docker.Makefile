@@ -36,7 +36,6 @@ DOCKER_BUILD              = DOCKER_BUILDKIT=1 \
 								--progress=$(BUILD_PROGRESS) \
 								$(EXTRA_DOCKER_BUILD_FLAGS) \
 								--target $(BUILD_TYPE) \
-								--no-cache \
 								-t $(DOCKER_FULL_NAME):$(DOCKER_TAG)-LFR \
 								$(BUILD_ARGS) .
 DOCKER_PUSH               = docker push $(DOCKER_FULL_NAME):$(DOCKER_TAG)

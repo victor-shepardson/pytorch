@@ -63,7 +63,7 @@ RUN TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbi
     CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
     /opt/alkemist/lfr/scripts/lfr-helper.sh python setup.py install
 
-RUN cd tests && ./run_test.py
+RUN cd test && ./run_test.py
 
 ## modified below to only build dev image, skipping official
 
