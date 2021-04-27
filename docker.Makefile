@@ -29,7 +29,7 @@ BUILD_ARGS                = --build-arg BASE_IMAGE=$(BASE_IMAGE) \
 							--build-arg CUDA_CHANNEL=$(CUDA_CHANNEL) \
 							--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
 							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL) \
-							--build-arg ALKEMIST_LICENSE_KEY="$(shell cat ../alkemist_key.txt) $(date)"
+							--build-arg ALKEMIST_LICENSE_KEY="$(shell cat ../alkemist_key.txt `date`)"
 EXTRA_DOCKER_BUILD_FLAGS ?=
 DOCKER_BUILD              = DOCKER_BUILDKIT=1 \
 							docker build \
