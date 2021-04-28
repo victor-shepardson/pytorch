@@ -31,7 +31,7 @@ namespace {
 // Note: this is not a native function as Quantizer is not exposed to python yet
 QuantizerPtr Tensor::quantizer() const {
   // This is a terrible hack to emulate what VariableType is doing
-  at::AutoNonVariableTypeMode non_var_type_mode(true);
+  at::AutoDispatchBelowAutograd mode;
   return get_qtensorimpl(*this)->quantizer();
 }
 
@@ -96,7 +96,7 @@ inline Tensor new_qtensor(
     const TensorOptions& options,
     QuantizerPtr quantizer) {
   auto memory_format = options.memory_format_opt().value_or(MemoryFormat::Contiguous);
-  at::Allocator* allocator = options.device().type() == DeviceType::CUDA
+  at::Allocator* allocator = options.device().is_cuda()
     ? at::detail::getCUDAHooks().getCUDADeviceAllocator()
     : at::getCPUAllocator();
 

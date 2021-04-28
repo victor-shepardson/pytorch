@@ -1,9 +1,9 @@
 import importlib
 from abc import ABC, abstractmethod
-from pickle import _getattribute, _Pickler  # type: ignore
-from pickle import whichmodule as _pickle_whichmodule  # type: ignore
+from pickle import _getattribute, _Pickler  # type: ignore[attr-defined]
+from pickle import whichmodule as _pickle_whichmodule  # type: ignore[attr-defined]
 from types import ModuleType
-from typing import Any, Optional, Tuple, List
+from typing import Any, List, Optional, Tuple
 
 from ._mangling import demangle, get_mangle_prefix, is_mangled
 
@@ -74,9 +74,12 @@ class Importer(ABC):
             # TODO: I guess we should do copyreg too?
             reduce = getattr(obj, "__reduce__", None)
             if reduce is not None:
-                rv = reduce()
-                if isinstance(rv, str):
-                    name = rv
+                try:
+                    rv = reduce()
+                    if isinstance(rv, str):
+                        name = rv
+                except Exception:
+                    pass
         if name is None:
             name = getattr(obj, "__qualname__", None)
         if name is None:
@@ -182,13 +185,10 @@ class OrderedImporter(Importer):
         else:
             raise ModuleNotFoundError(module_name)
 
-    def get_name(self, obj: Any, name: Optional[str] = None) -> Tuple[str, str]:
-        last_err = None
+    def whichmodule(self, obj: Any, name: str) -> str:
         for importer in self._importers:
-            try:
-                return importer.get_name(obj, name)
-            except ObjNotFoundError as err:
-                last_err = err
+            module_name = importer.whichmodule(obj, name)
+            if module_name != "__main__":
+                return module_name
 
-        assert last_err is not None
-        raise last_err
+        return "__main__"
