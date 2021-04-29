@@ -94,6 +94,7 @@ COPY --from=build /opt/conda /opt/conda
 COPY --from=build /opt/alkemist /opt/alkemist
 COPY --from=test /opt/pytorch_tests.log /opt/pytorch_tests.log
 # COPY --from=conda-installs /opt/conda /opt/conda
+ENV LFR_ROOT_PATH=/opt/alkemist/lfr
 ENV PATH /opt/conda/bin:$PATH
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
