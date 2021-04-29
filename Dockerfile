@@ -54,8 +54,8 @@ COPY --from=submodule-update /opt/pytorch /opt/pytorch
 COPY --from=lfr-files /usr/src/lfr /opt/alkemist/lfr
 ENV LFR_ROOT_PATH=/opt/alkemist/lfr
 
-# RUN --mount=type=cache,target=/opt/ccache \
-RUN \
+# RUN \
+RUN --mount=type=cache,target=/opt/ccache \
     TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
     CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
     /opt/alkemist/lfr/scripts/lfr-helper.sh python setup.py install
@@ -64,7 +64,7 @@ RUN \
 
 FROM build as test
 WORKDIR /opt/pytorch/test
-RUN ./run_test.py -v 1 --jit --continue-through-error 2>&1 > /opt/pytorch_test.log || echo "tests failed"
+RUN ./run_test.py -v 1 --jit --continue-through-error 2>&1 > /opt/pytorch_tests.log || echo "tests failed"
 
 ## modified below to only build dev image, skipping official
 
