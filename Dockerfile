@@ -64,7 +64,9 @@ RUN --mount=type=cache,target=/opt/ccache \
 
 FROM build as test
 WORKDIR /opt/pytorch/test
-RUN ./run_test.py -v 1 --jit --continue-through-error 2>&1 > /opt/pytorch_tests.log || echo "tests failed"
+# RUN ./run_test.py -v 1 --jit --continue-through-error 2>&1 > /opt/pytorch_tests.log || echo "tests failed"
+RUN ./run_test.py 2>&1 > /opt/pytorch_tests.log || echo "tests failed"
+
 
 ## modified below to only build dev image, skipping official
 
@@ -89,6 +91,7 @@ RUN --mount=type=cache,id=apt-final,target=/var/cache/apt \
         libpng-dev && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=build /opt/conda /opt/conda
+COPY --from=build /opt/alkemist /opt/alkemist
 COPY --from=test /opt/pytorch_tests.log /opt/pytorch_tests.log
 # COPY --from=conda-installs /opt/conda /opt/conda
 ENV PATH /opt/conda/bin:$PATH
